@@ -108,7 +108,18 @@ jobs:
       - run: flutter pub get
 
       - name: 构建 Windows release
-        run: flutter build windows --release
+        shell: pwsh
+        run: |
+          # 失败时把日志尾部写进 annotation，便于在没有仓库权限的情况下诊断
+          $log = "windows-build.log"
+          flutter build windows --release 2>&1 | Tee-Object -FilePath $log
+          if ($LASTEXITCODE -ne 0) {
+            $tail = (Get-Content $log -Tail 15) -join ' >> '
+            $tail = $tail -replace '\r?\n', ' '
+            $tail = $tail -replace '%', '%25'
+            Write-Output "::error title=Windows build failed::$tail"
+            exit 1
+          }
 
       - name: 打 MSIX（未配置证书时先生成未签名包）
         run: dart run msix:create
