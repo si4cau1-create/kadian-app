@@ -100,9 +100,14 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v4
+      # 单独用新版 Flutter：3.24.5 的 visual_studio.dart 把 cmakeGenerator
+      # 写死成 switch(_majorVersion){ 17 => 'VS 17 2022', _ => 'VS 16 2019' }，
+      # 遇到 VS 2026（主版本 18）会退回 2019 生成器，直接
+      # "could not find any instance of Visual Studio"。
+      # Flutter master 已补上 18 => 'Visual Studio 18 2026'。
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
+          flutter-version: '3.50.0'
           channel: stable
           cache: true
       - run: flutter pub get
