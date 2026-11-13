@@ -47,6 +47,23 @@ class _HomeShellState extends State<HomeShell> {
         title: Row(
           children: [
             Text(_titles[_index]),
+            const SizedBox(width: 8),
+            // 当前档案的学科：任何页面都能一眼确认没串科
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: KadianColors.sink,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: KadianColors.line),
+              ),
+              child: Text(
+                widget.services.subject.label,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: KadianColors.text2,
+                ),
+              ),
+            ),
             const SizedBox(width: 10),
             if (_index == 0)
               Container(

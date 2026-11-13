@@ -8,6 +8,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
 import '../calibration/params.dart';
+import '../subject/subject.dart';
 import 'models.dart';
 
 class PackValidation {
@@ -70,6 +71,7 @@ class ContentPackLoader {
     String source = 'asset',
     bool verifyChecksum = true,
     String? currentAppVersion,
+    Subject? expectedSubject,
   }) {
     final errors = <String>[];
     final warnings = <String>[];
@@ -167,6 +169,34 @@ class ContentPackLoader {
       calibrationJson: calibrationJson,
       sourcePath: source,
     );
+
+    // 单学科实例：拒绝任何跨学科的包。宁可加载失败也不让两科数据混一个档案。
+    if (expectedSubject != null) {
+      final declared = pack.subject;
+      if (declared != null && declared != expectedSubject) {
+        errors.add('内容包属于「${declared.label}」，'
+            '当前档案是「${expectedSubject.label}」，拒绝加载');
+      }
+      final foreignNodes = pack.foreignNodeIds(expectedSubject);
+      if (foreignNodes.isNotEmpty) {
+        errors.add('内容包含 ${foreignNodes.length} 个跨学科节点'
+            '（${foreignNodes.take(3).join('、')}…）');
+      }
+      final foreignItems = pack.foreignItemIds(expectedSubject);
+      if (foreignItems.isNotEmpty) {
+        errors.add('内容包含 ${foreignItems.length} 道跨学科题目'
+            '（${foreignItems.take(3).join('、')}…）');
+      }
+      final foreignClusters = pack.foreignClusterIds(expectedSubject);
+      if (foreignClusters.isNotEmpty) {
+        errors.add('内容包含 ${foreignClusters.length} 个跨学科簇');
+      }
+      final foreignAchievements =
+          pack.foreignAchievementIds(expectedSubject);
+      if (foreignAchievements.isNotEmpty) {
+        errors.add('内容包含 ${foreignAchievements.length} 个跨学科成就');
+      }
+    }
 
     return LoadedPack(
       pack: pack,
@@ -304,12 +334,21 @@ List<int> _parseVersion(String raw) {
   ];
 }
 
-/// 运行时内容包服务：内置包 → 已安装 OTA 包 → 校验失败回退
+/// 运行时内容包服务：内置包 → 已安装 OTA 包 → 校验失败回退。
+///
+/// 一个实例只服务一个学科，资产目录与 OTA 安装目录都按学科隔离，
+/// 加载时还会拒绝跨学科的包。
 class ContentPackService {
-  ContentPackService({this.appVersion = '3.0.0'});
+  ContentPackService({
+    required this.subject,
+    this.learnerId = 'local',
+    this.appVersion = '4.0.0',
+  });
 
+  final Subject subject;
+  final String learnerId;
   final String appVersion;
-  static const String assetRoot = 'assets/content_pack';
+
   static const List<String> assetFiles = [
     'manifest.json',
     'graph.json',
@@ -318,6 +357,9 @@ class ContentPackService {
     'achievements.json',
     'calibration_params.json',
   ];
+
+  /// 内置资产目录：assets/content_pack/<subject>/
+  String get assetRoot => 'assets/content_pack/${subject.id}';
 
   final ContentPackLoader _loader = const ContentPackLoader();
 
@@ -338,9 +380,10 @@ class ContentPackService {
     }
     return _loader.parse(
       files,
-      source: 'asset',
+      source: assetRoot,
       verifyChecksum: true,
       currentAppVersion: appVersion,
+      expectedSubject: subject,
     );
   }
 
@@ -362,6 +405,7 @@ class ContentPackService {
         source: dir.path,
         verifyChecksum: true,
         currentAppVersion: appVersion,
+        expectedSubject: subject,
       );
       // 校验不过就当没装过：宁可回到内置包，也不带着坏数据跑
       return loaded.validation.ok ? loaded : null;
@@ -399,6 +443,7 @@ class ContentPackService {
       source: zipPath,
       verifyChecksum: true,
       currentAppVersion: appVersion,
+      expectedSubject: subject,
     );
     if (!loaded.validation.ok) {
       throw ContentPackException(loaded.validation.errors.join('；'));
@@ -438,9 +483,16 @@ class ContentPackService {
     if (pointer.existsSync()) pointer.deleteSync();
   }
 
+  /// OTA 包按档案与学科隔离：learners/<learnerId>/<subject>/content_packs/
   Future<Directory> _packsDir() async {
-    final dir = await getApplicationSupportDirectory();
-    final packs = Directory(p.join(dir.path, 'content_packs'));
+    final base = await getApplicationSupportDirectory();
+    final packs = Directory(p.join(
+      base.path,
+      'learners',
+      learnerId,
+      subject.id,
+      'content_packs',
+    ));
     if (!packs.existsSync()) packs.createSync(recursive: true);
     return packs;
   }

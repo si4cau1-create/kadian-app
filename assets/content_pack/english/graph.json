@@ -1,0 +1,116 @@
+{
+  "subjects": [
+    {
+      "id": "en",
+      "title": "英语",
+      "beta": false,
+      "trackIds": [
+        "en.b1"
+      ]
+    }
+  ],
+  "tracks": [
+    {
+      "id": "en.b1",
+      "subjectId": "en",
+      "title": "英语 B1 阅读",
+      "clusterIds": [
+        "en.b1.grammar",
+        "en.b1.reading"
+      ]
+    }
+  ],
+  "clusters": [
+    {
+      "id": "en.b1.grammar",
+      "subjectId": "en",
+      "trackId": "en.b1",
+      "title": "语法",
+      "nodeIds": [
+        "en.g.relative",
+        "en.g.participle"
+      ]
+    },
+    {
+      "id": "en.b1.reading",
+      "subjectId": "en",
+      "trackId": "en.b1",
+      "title": "阅读",
+      "nodeIds": [
+        "en.r.detail",
+        "en.r.infer",
+        "en.r.vocab"
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "id": "en.g.relative",
+      "clusterId": "en.b1.grammar",
+      "title": "定语从句",
+      "prereqIds": [],
+      "weight": 1.0,
+      "tags": [
+        "grammar",
+        "clause"
+      ],
+      "gloss": "who/which/whose/where：先找先行词，再判断从句里缺什么成分。"
+    },
+    {
+      "id": "en.g.participle",
+      "clusterId": "en.b1.grammar",
+      "title": "分词结构",
+      "prereqIds": [
+        "en.g.relative"
+      ],
+      "weight": 1.1,
+      "tags": [
+        "grammar",
+        "clause"
+      ],
+      "gloss": "Faced with…/Facing…：-ed 被动、-ing 主动，逻辑主语必须与主句一致。"
+    },
+    {
+      "id": "en.r.detail",
+      "clusterId": "en.b1.reading",
+      "title": "细节题",
+      "prereqIds": [
+        "en.g.relative"
+      ],
+      "weight": 1.0,
+      "tags": [
+        "reading",
+        "skill"
+      ],
+      "gloss": "同义替换是命门：题干词与原文词往往不同形。"
+    },
+    {
+      "id": "en.r.infer",
+      "clusterId": "en.b1.reading",
+      "title": "推断题",
+      "prereqIds": [
+        "en.r.detail"
+      ],
+      "weight": 1.1,
+      "tags": [
+        "reading",
+        "skill"
+      ],
+      "gloss": "只推一步，不选文中没有线索的「合理想象」。"
+    },
+    {
+      "id": "en.r.vocab",
+      "clusterId": "en.b1.reading",
+      "title": "词义猜测",
+      "prereqIds": [
+        "en.r.detail"
+      ],
+      "weight": 0.9,
+      "tags": [
+        "reading",
+        "vocab"
+      ],
+      "gloss": "看搭配与上下文褒贬，别背词典第一义。"
+    }
+  ]
+}

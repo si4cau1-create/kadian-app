@@ -1,0 +1,163 @@
+{
+  "passages": [
+    {
+      "id": "p.en.001",
+      "subjectId": "en",
+      "lang": "en",
+      "title": "The Four-Day Week Trial",
+      "source": "原创（B1 说明文）",
+      "text": "Last year our team switched to a four-day week for a three-month trial. The plan was simple: the same amount of work, one day less in the office. Managers worried that clients would complain. In fact, most clients did not notice, because replies simply arrived a day earlier. The harder problem was internal. Meetings had been used as a way to avoid decisions; with less time, people were forced to decide in writing. Some team members loved it. Others, especially those who had built their reputation on being visible in the office, felt invisible. We kept the four-day week, but only after we changed how we measured work — from hours present to outcomes delivered."
+    }
+  ],
+  "items": [
+    {
+      "id": "en.i.g1",
+      "nodeId": "en.g.relative",
+      "passageId": "p.en.001",
+      "type": "choice",
+      "stem": "Others, especially those ______ reputation depended on being visible, felt invisible.",
+      "options": [
+        "whose",
+        "which",
+        "who",
+        "what"
+      ],
+      "answerIndex": 0,
+      "answerKeywords": [
+        "whose"
+      ],
+      "difficulty": 0.2,
+      "discrimination": 1.2,
+      "expectedSeconds": 40,
+      "explain": "先行词是 those（人），从句里 reputation 前缺「谁的」，用 whose。",
+      "tags": [
+        "relative"
+      ]
+    },
+    {
+      "id": "en.i.g2",
+      "nodeId": "en.g.participle",
+      "passageId": "p.en.001",
+      "type": "choice",
+      "stem": "______ with less time, people were forced to decide in writing.",
+      "options": [
+        "Faced",
+        "Facing",
+        "To face",
+        "Face"
+      ],
+      "answerIndex": 0,
+      "answerKeywords": [
+        "Faced"
+      ],
+      "difficulty": 0.6,
+      "discrimination": 1.3,
+      "expectedSeconds": 50,
+      "explain": "be faced with = 面临；过去分词作状语表被动，逻辑主语 people 是被施压的一方。",
+      "tags": [
+        "participle"
+      ]
+    },
+    {
+      "id": "en.i.r1",
+      "nodeId": "en.r.detail",
+      "passageId": "p.en.001",
+      "type": "choice",
+      "stem": "What surprised the managers?",
+      "options": [
+        "Clients complained constantly.",
+        "Clients hardly noticed the change.",
+        "The team refused to work four days.",
+        "Replies became slower."
+      ],
+      "answerIndex": 1,
+      "answerKeywords": [
+        "hardly noticed",
+        "did not notice"
+      ],
+      "difficulty": -0.4,
+      "discrimination": 1.1,
+      "expectedSeconds": 45,
+      "explain": "原文 In fact, most clients did not notice → 与 hardly noticed 同义替换。",
+      "tags": [
+        "detail",
+        "paraphrase"
+      ]
+    },
+    {
+      "id": "en.i.r2",
+      "nodeId": "en.r.infer",
+      "passageId": "p.en.001",
+      "type": "choice",
+      "stem": "What can be inferred about the team members who disliked the change?",
+      "options": [
+        "They wanted a shorter week but not fewer meetings.",
+        "They valued being seen at work more than the extra day off.",
+        "They were the most productive members of the team.",
+        "They had never trusted the managers."
+      ],
+      "answerIndex": 1,
+      "answerKeywords": [
+        "being seen",
+        "visible"
+      ],
+      "difficulty": 0.8,
+      "discrimination": 1.3,
+      "expectedSeconds": 65,
+      "explain": "「built their reputation on being visible」→ 他们的价值感来自「被看见」，压缩在办公室的时间让他们「felt invisible」。只推一步。",
+      "tags": [
+        "infer"
+      ]
+    },
+    {
+      "id": "en.i.r3",
+      "nodeId": "en.r.infer",
+      "passageId": "p.en.001",
+      "type": "choice",
+      "stem": "Which statement best captures the writer's main point?",
+      "options": [
+        "Four-day weeks always raise productivity.",
+        "Meetings are a waste of time.",
+        "The shorter week only worked after the way work was measured changed.",
+        "Clients are indifferent to service quality."
+      ],
+      "answerIndex": 2,
+      "answerKeywords": [
+        "measured",
+        "outcomes"
+      ],
+      "difficulty": 1.0,
+      "discrimination": 1.4,
+      "expectedSeconds": 75,
+      "explain": "末句 but only after we changed how we measured work 是主旨落点：制度改变必须配套评价方式。",
+      "tags": [
+        "main-idea"
+      ]
+    },
+    {
+      "id": "en.i.v1",
+      "nodeId": "en.r.vocab",
+      "passageId": "p.en.001",
+      "type": "choice",
+      "stem": "In the last sentence, \"outcomes delivered\" is closest in meaning to ______.",
+      "options": [
+        "hours spent in the office",
+        "results actually achieved",
+        "meetings successfully arranged",
+        "clients formally notified"
+      ],
+      "answerIndex": 1,
+      "answerKeywords": [
+        "results",
+        "achieved"
+      ],
+      "difficulty": 0.1,
+      "discrimination": 1.0,
+      "expectedSeconds": 35,
+      "explain": "outcome＝结果；与前文 hours present 形成对照，所以是「实际交付的成果」。",
+      "tags": [
+        "vocab"
+      ]
+    }
+  ]
+}

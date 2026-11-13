@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+import '../subject/subject.dart';
 import 'tables.dart';
 
 part 'database.g.dart';
@@ -24,10 +25,22 @@ part 'database.g.dart';
   DailyStats,
 ])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase({
+    required this.learnerId,
+    required this.subject,
+    Directory? baseDir,
+  }) : super(_openConnection(learnerId, subject, baseDir: baseDir));
 
-  /// 测试/工具用：传入自定义执行器
-  AppDatabase.withExecutor(super.executor);
+  /// 测试/工具用：传入自定义执行器，可指定学科（跨学科隔离测试要用英语实例）
+  AppDatabase.withExecutor(super.executor, {Subject? subject})
+      : learnerId = 'test',
+        subject = subject ?? Subject.japanese;
+
+  /// 当前档案
+  final String learnerId;
+
+  /// 当前档案绑定的学科。一个数据库文件只服务一个学科。
+  final Subject subject;
 
   @override
   int get schemaVersion => 2;
@@ -142,12 +155,16 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<EvidenceStats> evidenceStats() async {
+    // legacy_mixed（旧混合档案中无法归属学科的迁移残留）一律不进独立统计：
+    // 独立成功率与核心成就只吃本学科的独立证据。
+    final notLegacy = evidenceEvents.source.equals('legacy_mixed').not();
     final total = evidenceEvents.id.count();
     final independent = evidenceEvents.id.count(
-      filter: evidenceEvents.independent.equals(true),
+      filter: evidenceEvents.independent.equals(true) & notLegacy,
     );
     final independentCorrect = evidenceEvents.id.count(
       filter: evidenceEvents.independent.equals(true) &
+          notLegacy &
           evidenceEvents.score.isBiggerOrEqualValue(0.5),
     );
     final row = await (selectOnly(evidenceEvents)
@@ -358,6 +375,8 @@ class AppDatabase extends _$AppDatabase {
     return {
       'exported_at': DateTime.now().toIso8601String(),
       'schema_version': schemaVersion,
+      // 单学科实例：导出显式带学科，导入方不会把两个档案混在一起
+      'subject': subject.id,
       'evidence_events': [
         for (final row in evidence)
           {
@@ -510,7 +529,11 @@ class EvidenceStats {
       independent == 0 ? 0 : independentCorrect / independent;
 }
 
-LazyDatabase _openConnection() {
+LazyDatabase _openConnection(
+  String learnerId,
+  Subject subject, {
+  Directory? baseDir,
+}) {
   return LazyDatabase(() async {
     // Android 上先保证 sqlite3 可用（sqlite3_flutter_libs 随包分发的动态库）
     try {
@@ -520,8 +543,16 @@ LazyDatabase _openConnection() {
     }
     await _prepareAndroidSqliteTempDir();
 
-    final dir = await getApplicationSupportDirectory();
-    final dbDir = Directory(p.join(dir.path, 'databases'));
+    // 单学科实例：learners/<learnerId>/<subject>/kadian.sqlite
+    // 换学科 = 换文件，物理上不可能串账。
+    // baseDir 供迁移/测试注入，默认取应用支持目录。
+    final base = baseDir ?? await getApplicationSupportDirectory();
+    final dbDir = Directory(p.join(
+      base.path,
+      'learners',
+      learnerId,
+      subject.id,
+    ));
     if (!dbDir.existsSync()) {
       dbDir.createSync(recursive: true);
     }

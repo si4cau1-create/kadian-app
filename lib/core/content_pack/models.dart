@@ -4,6 +4,8 @@
 /// 不出现任何 IRT/BKT 计算逻辑，算法变更随客户端版本走。
 library;
 
+import '../subject/subject.dart';
+
 class ContentManifest {
   const ContentManifest({
     required this.packId,
@@ -12,6 +14,7 @@ class ContentManifest {
     required this.engineVersion,
     required this.createdAt,
     required this.checksum,
+    this.subject = '',
     this.fileHashes = const {},
     this.notes = '',
   });
@@ -22,6 +25,9 @@ class ContentManifest {
   final String engineVersion;
   final String createdAt;
   final String checksum;
+
+  /// 该内容包所属学科（`japanese` / `english`）。旧版混合包为空。
+  final String subject;
   final Map<String, String> fileHashes;
   final String notes;
 
@@ -38,6 +44,7 @@ class ContentManifest {
       engineVersion: json['engineVersion'] as String? ?? '1.0.0',
       createdAt: json['createdAt'] as String? ?? '',
       checksum: json['checksum'] as String? ?? '',
+      subject: json['subject'] as String? ?? '',
       fileHashes: hashes,
       notes: json['notes'] as String? ?? '',
     );
@@ -50,6 +57,7 @@ class ContentManifest {
         'engineVersion': engineVersion,
         'createdAt': createdAt,
         'checksum': checksum,
+        'subject': subject,
         'fileHashes': fileHashes,
         'notes': notes,
       };
@@ -345,14 +353,19 @@ class AchievementDef {
     required this.description,
     required this.metric,
     required this.stages,
+    this.subjectId = '',
     this.independentOnly = true,
     this.xpEligible = false,
     this.icon = '●',
   });
 
+  /// 学科命名空间化的成就 id，形如 `japanese.first_step`
   final String id;
   final String title;
   final String description;
+
+  /// 归属学科（`japanese` / `english`）。成就墙只展示当前学科的成就。
+  final String subjectId;
 
   /// 结算指标，见 AchievementMetric
   final String metric;
@@ -367,6 +380,7 @@ class AchievementDef {
         id: json['id'] as String,
         title: json['title'] as String? ?? json['id'] as String,
         description: json['description'] as String? ?? '',
+        subjectId: json['subjectId'] as String? ?? '',
         metric: json['metric'] as String? ?? '',
         stages: (json['stages'] as List?)
                 ?.whereType<Map>()
@@ -421,6 +435,40 @@ class ContentPack {
   };
 
   ContentManifest get manifestInfo => manifest;
+
+  /// 该内容包所属学科。优先读 manifest.subject，旧包回落到 subjects[0].id。
+  Subject? get subject {
+    final declared = Subject.tryParse(manifest.subject);
+    if (declared != null) return declared;
+    if (subjects.isEmpty) return null;
+    return Subject.tryParse(subjects.first.id);
+  }
+
+  /// 不属于 [expected] 学科的节点（正常应为空）
+  List<String> foreignNodeIds(Subject expected) => [
+        for (final node in nodes)
+          if (!expected.ownsNode(node.id)) node.id,
+      ];
+
+  /// 指向外学科节点的题目（正常应为空）
+  List<String> foreignItemIds(Subject expected) => [
+        for (final item in items)
+          if (!expected.ownsNode(item.nodeId)) item.id,
+      ];
+
+  /// 不属于 [expected] 学科的簇（正常应为空）
+  List<String> foreignClusterIds(Subject expected) => [
+        for (final cluster in clusters)
+          if (Subject.tryParse(cluster.subjectId) != expected) cluster.id,
+      ];
+
+  /// 归属其他学科的成就（正常应为空）
+  List<String> foreignAchievementIds(Subject expected) => [
+        for (final def in achievements)
+          if (def.subjectId.isNotEmpty &&
+              Subject.tryParse(def.subjectId) != expected)
+            def.id,
+      ];
 
   List<NodeDef> nodesOfCluster(String clusterId) =>
       nodes.where((n) => n.clusterId == clusterId).toList();

@@ -10,6 +10,7 @@ import '../../app/providers.dart';
 import '../../app/services.dart';
 import '../../app/theme.dart';
 import '../../core/app_info.dart';
+import '../../core/subject/subject.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key, required this.services});
@@ -168,6 +169,38 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       ..showSnackBar(SnackBar(content: Text(message)));
   }
 
+  /// 切换学科：改配置 → 退出设置页 → 重建整条服务栈。
+  ///
+  /// 两个学科各有自己的数据库目录，切换不会删数据，切回来进度还在。
+  Future<void> _switchSubject(Subject target) async {
+    final current = widget.services.subject;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('切换到${target.label}？'),
+        content: Text(
+          '切换后等级看板、成就墙、复习队列都会换成${target.label}的进度。'
+          '当前${current.label}的证据不会被删除，切回来仍然在。',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('取消'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('切换'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    widget.services.settings.subject = target;
+    if (!mounted) return;
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    ref.invalidate(bootProvider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final services = widget.services;
@@ -184,6 +217,52 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  _Section(
+                    title: '学习档案（单学科）',
+                    description:
+                        '这个档案只学一门：证据、等级、成就、词库都只在本学科内计算，'
+                        '不会和另一科混在一起。切换学科后本学科进度原样保留。',
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: KadianColors.accentSoft,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Text(
+                              '当前：${services.subject.label}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: KadianColors.accentInk,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          OutlinedButton(
+                            onPressed: () =>
+                                _switchSubject(services.subject.other),
+                            child: Text('切换到${services.subject.other.label}'),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '本学科规模：${services.pack.nodes.length} 节点 · '
+                        '${services.pack.items.length} 题 · '
+                        '${services.pack.vocab.length} 词条 · '
+                        '${services.pack.achievements.length} 成就',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: KadianColors.faint,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
                   _Section(
                     title: '在线攻略（LLM 代理）',
                     description:

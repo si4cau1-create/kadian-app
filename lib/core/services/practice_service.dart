@@ -9,16 +9,22 @@ import '../calibration/params.dart';
 import '../content_pack/models.dart';
 import '../db/database.dart';
 import '../db/tables.dart';
+import '../subject/subject.dart';
 
 /// 做题闭环的本地服务：开题 → 作答 → 证据落库 → 校准 → 等级聚合。
 ///
 /// 全程不联网。LLM 只负责讲解，不参与任何等级计算。
+///
+/// 一个实例只服务一个学科：内容包、数据库、等级、成就都在该学科内闭环。
+/// 对外方法接受可选的 `subject` 参数，一旦与档案不一致就抛
+/// [SubjectMismatchException]，绝不静默切换。
 class PracticeService {
   PracticeService({
     required this.db,
     required this.pack,
     required this.engine,
     required this.aggregator,
+    required this.subject,
     this.learnerId = 'local',
   });
 
@@ -26,14 +32,39 @@ class PracticeService {
   final ContentPack pack;
   final CalibrationEngine engine;
   final LevelAggregator aggregator;
+
+  /// 档案绑定的学科
+  final Subject subject;
   final String learnerId;
   final _uuid = const Uuid();
 
   CalibrationParams get params => engine.params;
 
+  /// 校验调用方传入的学科；不一致直接抛 subject_mismatch
+  void ensureSubject(Object? requested, String operation) {
+    requireSameSubject(
+      current: subject,
+      requested: requested,
+      operation: operation,
+    );
+  }
+
+  /// 校验某个节点归属本学科，否则抛错（防止拿外语节点来查）
+  void ensureOwnsNode(String nodeId, String operation) {
+    if (!subject.ownsNode(nodeId)) {
+      throw SubjectMismatchException(
+        expected: subject.id,
+        actual: '${subject.other.id}:$nodeId',
+        operation: operation,
+      );
+    }
+  }
+
   // ---------------- 开题 ----------------
 
-  Future<AttemptRow> startAttempt(ItemDef item) async {
+  Future<AttemptRow> startAttempt(ItemDef item, {Object? subject}) async {
+    ensureSubject(subject, 'start_attempt');
+    ensureOwnsNode(item.nodeId, 'start_attempt');
     final open = await db.openAttempt(item.id);
     if (open != null) return open;
     final id = _uuid.v4();
@@ -62,7 +93,10 @@ class PracticeService {
     required bool filtered,
     required bool servedOffline,
     int latencyMs = 0,
+    Object? subject,
   }) async {
+    ensureSubject(subject, 'hint');
+    ensureOwnsNode(attempt.nodeId, 'hint');
     await db.insertHintEvent(HintEventsCompanion.insert(
       id: _uuid.v4(),
       itemId: attempt.itemId,
@@ -111,7 +145,10 @@ class PracticeService {
     required int hintRequestCount,
     required bool answerRevealed,
     EvidenceKind kind = EvidenceKind.attempt,
+    Object? subject,
   }) async {
+    ensureSubject(subject, 'submit_attempt');
+    ensureOwnsNode(item.nodeId, 'submit_attempt');
     final now = DateTime.now();
     final nodeState = await db.nodeState(item.nodeId);
     final itemRow = await db.itemDifficultyFor(item.id);
@@ -252,19 +289,30 @@ class PracticeService {
     required VocabStateRow word,
     required String rating,
     required int quality,
+    Object? subject,
   }) async {
+    ensureSubject(subject, 'vocab_review');
+    if (word.clusterId.isNotEmpty) {
+      ensureOwnsNode(word.clusterId, 'vocab_review');
+    }
     final now = DateTime.now();
     final score = quality >= 3 ? 1.0 : 0.0;
     await db.insertEvidence(EvidenceEventsCompanion.insert(
       id: _uuid.v4(),
       learnerId: Value(learnerId),
-      nodeId: word.clusterId.isEmpty ? 'vocab.adhoc' : word.clusterId,
+      nodeId: word.clusterId.isEmpty
+          ? '${this.subject.packPrefix}.vocab.adhoc'
+          : word.clusterId,
       itemId: Value(word.wordId),
       kind: EvidenceKind.review,
       score: score,
       effectiveScore: Value(score),
       independent: const Value(true),
-      payload: Value(jsonEncode({'rating': rating, 'box': word.box})),
+      payload: Value(jsonEncode({
+        'rating': rating,
+        'box': word.box,
+        'subject': this.subject.id,
+      })),
       createdAt: now,
     ));
     await db.bumpDaily(
@@ -276,7 +324,8 @@ class PracticeService {
 
   // ---------------- 等级 ----------------
 
-  Future<LevelSummary> levelSummary({DateTime? now}) async {
+  Future<LevelSummary> levelSummary({DateTime? now, Object? subject}) async {
+    ensureSubject(subject, 'get_level');
     final states = await db.allNodeStates();
     final stats = await db.evidenceStats();
     final views = <NodeLevelView>[];
@@ -330,7 +379,9 @@ class PracticeService {
   Future<ItemDef?> nextDiagnosticItem({
     required Set<String> excludeItemIds,
     String? clusterId,
+    Object? subject,
   }) async {
+    ensureSubject(subject, 'diagnose_next');
     final states = await db.allNodeStates();
     final theta = states.isEmpty
         ? 0.0
@@ -338,13 +389,23 @@ class PracticeService {
     final difficulties = await db.allItemDifficulties();
     final exposure = {for (final d in difficulties) d.itemId: d.exposure};
 
-    var pool = pack.items;
+    // 内容包已按学科拆分，这里是防御层：非本学科节点一律不进候选池
+    final ownItems = [
+      for (final item in pack.items)
+        if (this.subject.ownsNode(item.nodeId)) item,
+    ];
+    if (ownItems.isEmpty) return null;
+
+    var pool = ownItems;
     if (clusterId != null) {
-      final nodeIds =
-          pack.nodesOfCluster(clusterId).map((e) => e.id).toSet();
-      pool = pool.where((i) => nodeIds.contains(i.nodeId)).toList();
+      final nodeIds = pack
+          .nodesOfCluster(clusterId)
+          .where((n) => this.subject.ownsNode(n.id))
+          .map((e) => e.id)
+          .toSet();
+      pool = ownItems.where((i) => nodeIds.contains(i.nodeId)).toList();
     }
-    if (pool.isEmpty) pool = pack.items;
+    if (pool.isEmpty) pool = ownItems;
 
     return NextItemSelector(engine).pick(
       candidates: pool,
@@ -354,13 +415,52 @@ class PracticeService {
     );
   }
 
-  /// 卡住了就回退：返回掌握度不足的前置节点
-  Future<List<NodeDef>> prerequisiteFallback(String nodeId) async {
-    final chain = pack.prereqChain(nodeId);
+  /// 卡住了就回退：返回掌握度不足的前置节点。
+  ///
+  /// 只在本学科图谱内回退，跨学科前置一律剔除——这是规格里明确禁止的。
+  Future<List<NodeDef>> prerequisiteFallback(
+    String nodeId, {
+    Object? subject,
+  }) async {
+    ensureSubject(subject, 'prerequisite_fallback');
+    ensureOwnsNode(nodeId, 'prerequisite_fallback');
+    final chain = pack
+        .prereqChain(nodeId)
+        .where((n) => this.subject.ownsNode(n.id))
+        .toList();
     final states = {for (final s in await db.allNodeStates()) s.nodeId: s};
     return chain
         .where((n) => (states[n.id]?.mastery ?? 0) < 0.38)
         .toList();
+  }
+
+  /// 给 LLM 的等级摘要：只含当前学科，且不含原始作答事件。
+  ///
+  /// `scope` 字段显式声明学科边界，代理侧据此拒绝跨学科引用。
+  Future<Map<String, dynamic>> summaryForLlm({DateTime? now}) async {
+    final level = await levelSummary(now: now);
+    return {
+      'subject': subject.id,
+      'subjectLabel': subject.label,
+      'scope': '${subject.id}-only',
+      'overallLevel': level.overallLevel,
+      'overallLabel': level.overallLabel,
+      'overallMastery': double.parse(level.overallMastery.toStringAsFixed(3)),
+      'evidenceCount': level.evidenceCount,
+      'independentRatio':
+          double.parse(level.independentRatio.toStringAsFixed(3)),
+      'clusters': [
+        for (final cluster in level.clusters)
+          {
+            'id': cluster.clusterId,
+            'title': cluster.title,
+            'level': cluster.level,
+            'levelLabel': cluster.levelLabel,
+          },
+      ],
+      'weakNodes': level.weakNodeIds.take(6).toList(),
+      'engineVersion': level.engineVersion,
+    };
   }
 }
 

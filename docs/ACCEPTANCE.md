@@ -13,6 +13,17 @@
 | 7 | 本地数据库迁移可从前一版升级不丢证据 | `core/db/database.dart`：`_upgradeV1ToV2` 只 `createTable` / `addColumn`，先探测表名列名 | 已验证 | `test/db_integration_test.dart` 手工造 v1 库（user_version=1）→ 打开后旧证据仍在，`hint_events`/`attempts` 等新表可用，`effective_score` / `cluster_id` 等新列补齐 |
 | 8 | 后端代理不持久化等级数据；审计日志可查 | `server/app/main.py` 请求内用完即弃；`audit.py` 只存元数据（text 默认不落库，存长度 + sha256 前缀）；`GET /v1/admin/audit` | 已验证 | `server/tests/test_guards.py`、`test_auth.py`；审计字段表见 `server/README.md` |
 
+## 单学科实例验收（产品修正案 §8）
+
+| # | 验收项 | 实现位置 | 状态 | 证据 |
+|---|---|---|---|---|
+| 1 | 英语档案下调用日语节点报错 `subject_mismatch` | `PracticeService.ensureOwnsNode` / `requireSameSubject` | 已验证 | `test/subject_isolation_test.dart`「英语档案下调用日语节点报 subject_mismatch」 |
+| 2 | 日语档案下看不到英语题 | 内容包按学科分包（`assets/content_pack/<subject>/`）+ 选题防御过滤 | 已验证 | 同上「日语档案下看不到英语题，反之亦然」（题目/节点/词条三层断言） |
+| 3 | 等级摘要与成就墙只含当前学科 | `LevelAggregator` 吃本学科包；`AchievementEngine.definitions` 按 `subjectId` 过滤；`summaryForLlm` 带 `scope: <subject>-only` | 已验证 | 同上「等级摘要与成就墙只含当前学科」 |
+| 4 | 跨学科前置回退被禁止 | `prerequisiteFallback` 先 `ensureOwnsNode`，图谱链再按 `ownsNode` 过滤 | 已验证 | 同上「跨学科前置回退被禁止」 |
+| 5 | legacy_mixed 不计入独立成功率与核心成就 | 迁移归档不进学科库；`evidenceStats` 与成就 SQL 双重排除 `source=legacy_mixed` | 已验证 | `test/legacy_migration_test.dart`（拆分/重置/幂等 3 例）+ 同上「legacy_mixed 不进独立统计」 |
+| 6 | 旧混合档案按 subject 拆分或可一键重置 | `core/db/legacy_migration.dart`：`LegacyMode.split` / `LegacyMode.reset` | 已验证 | 迁移测试：ja/en 各归各家、孤儿行进归档且 `independent=false`、旧库改名防重复、reset 零导入 |
+
 ## 补充：规格里逐条对应的实现点
 
 | 规格条目 | 实现 |

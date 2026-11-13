@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/app_info.dart';
+import '../features/subject/subject_picker_page.dart';
 import 'providers.dart';
 import 'shell.dart';
 import 'theme.dart';
@@ -20,21 +21,31 @@ class KadianApp extends StatelessWidget {
   }
 }
 
-/// 启动闸门：装配本地服务 → 首页。
-/// 装配失败会给出可读原因（内容包/数据库问题都在这里暴露），而不是白屏。
+/// 启动闸门：先确定学科 → 装配本地服务 → 首页。
+///
+/// 没选学科时停在选择页，绝不进入学习界面——否则会凭空产生一个
+/// 归属不明的混合档案。装配失败会给出可读原因，而不是白屏。
 class BootstrapGate extends ConsumerWidget {
   const BootstrapGate({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final services = ref.watch(servicesProvider);
-    return services.when(
+    final boot = ref.watch(bootProvider);
+    return boot.when(
       loading: () => const _SplashScreen(),
       error: (error, stack) => _BootstrapError(
         message: '$error',
-        onRetry: () => ref.invalidate(servicesProvider),
+        onRetry: () => ref.invalidate(bootProvider),
       ),
-      data: (value) => HomeShell(services: value),
+      data: (state) {
+        if (state is BootNeedsSubject) {
+          return SubjectPickerPage(settings: state.settings);
+        }
+        if (state is BootReady) {
+          return HomeShell(services: state.services);
+        }
+        return const _SplashScreen();
+      },
     );
   }
 }

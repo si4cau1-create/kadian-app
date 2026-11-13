@@ -43,7 +43,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/content_pack/
+    # 单学科实例：两份包物理隔离，运行时只加载当前学科那一份
+    - assets/content_pack/japanese/
+    - assets/content_pack/english/
 
 # Windows MSIX 打包配置（dart run msix:create 使用）
 msix_config:

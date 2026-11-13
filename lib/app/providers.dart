@@ -2,11 +2,48 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/calibration/level.dart';
 import '../core/db/database.dart';
+import '../core/settings/settings_store.dart';
 import '../features/achievements/achievement_engine.dart';
 import 'services.dart';
 
-final servicesProvider = FutureProvider<AppServices>((ref) {
-  return AppServices.bootstrap();
+/// 启动状态：要么还没选学科，要么服务栈已装好。
+sealed class BootState {
+  const BootState();
+}
+
+/// 首次启动（或重置档案后）：必须先选学科，未选择不进入学习界面。
+class BootNeedsSubject extends BootState {
+  const BootNeedsSubject(this.settings);
+
+  final SettingsStore settings;
+}
+
+class BootReady extends BootState {
+  const BootReady(this.services, this.settings);
+
+  final AppServices services;
+  final SettingsStore settings;
+}
+
+/// 读设置 → 有学科就装配服务栈，没有就停在选择页。
+///
+/// 切换学科时 invalidate 本 provider 即可：整条服务栈（内容包、数据库）
+/// 都会按新学科重建，旧档案的数据原样保留在自己的目录里。
+final bootProvider = FutureProvider<BootState>((ref) async {
+  final settings = await SettingsStore.load();
+  final subject = settings.subject;
+  if (subject == null) return BootNeedsSubject(settings);
+  final services = await AppServices.bootstrap(
+    subject: subject,
+    settingsStore: settings,
+  );
+  return BootReady(services, settings);
+});
+
+final servicesProvider = FutureProvider<AppServices>((ref) async {
+  final boot = await ref.watch(bootProvider.future);
+  if (boot is BootReady) return boot.services;
+  throw StateError('尚未选择学科：请先确定要学的科目');
 });
 
 /// 任何写操作完成后 bump 一次，让看板/成就/复习队列自动重算。

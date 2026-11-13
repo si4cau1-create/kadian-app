@@ -3,24 +3,48 @@ import 'package:drift/drift.dart';
 import '../../core/content_pack/models.dart';
 import '../../core/db/database.dart';
 import '../../core/db/tables.dart';
+import '../../core/subject/subject.dart';
 
 /// 成就结算：全本地、可重算。
 ///
 /// 三段式（bronze/silver/gold）只是同一指标的三个门槛，不做「隐藏成就」，
 /// 避免学习者为了解锁而刷。独立区与辅助区严格分开：independentOnly 的成就
 /// 只吃 independent 证据。
+///
+/// 成就带学科命名空间（`japanese.first_step`），成就墙只展示当前学科，
+/// XP 也只在本学科账上累加。
 class AchievementEngine {
   AchievementEngine({
     required this.db,
     required this.pack,
     required this.requiredEngineVersion,
+    required this.subject,
   });
 
   final AppDatabase db;
   final ContentPack pack;
   final String requiredEngineVersion;
 
-  Future<AchievementSnapshot> settle({DateTime? now}) async {
+  /// 当前档案绑定的学科
+  final Subject subject;
+
+  /// 本学科可结算的成就定义（防御层：包内混入外学科成就时直接剔除）
+  Iterable<AchievementDef> get definitions sync* {
+    for (final def in pack.achievements) {
+      if (def.subjectId.isEmpty) {
+        yield def;
+        continue;
+      }
+      if (Subject.tryParse(def.subjectId) == subject) yield def;
+    }
+  }
+
+  Future<AchievementSnapshot> settle({DateTime? now, Object? subject}) async {
+    requireSameSubject(
+      current: this.subject,
+      requested: subject,
+      operation: 'evaluate_achievement',
+    );
     final at = now ?? DateTime.now();
     final metrics = await computeMetrics(now: at);
     final existing = {
@@ -30,7 +54,7 @@ class AchievementEngine {
     final unlocked = <AchievementUnlock>[];
     final states = <AchievementView>[];
 
-    for (final def in pack.achievements) {
+    for (final def in definitions) {
       final value = metrics[def.metric] ?? 0;
       final prev = existing[def.id];
       var bestTier = prev?.tier ?? 'none';
@@ -82,6 +106,7 @@ class AchievementEngine {
       totalXp: states.fold(0, (sum, e) => sum + e.xp),
       independentXp: 0,
       settledAt: at,
+      subject: this.subject.id,
     );
   }
 
@@ -124,7 +149,7 @@ class AchievementEngine {
   Future<int> _countDistinctDays(EvidenceKind kind) async {
     final rows = await db.customSelect(
       "SELECT COUNT(DISTINCT date(created_at)) AS c FROM evidence_events "
-      'WHERE kind = ?',
+      "WHERE kind = ? AND source != 'legacy_mixed'",
       variables: [Variable.withString(kind.name)],
       readsFrom: {db.evidenceEvents},
     ).getSingle();
@@ -133,7 +158,8 @@ class AchievementEngine {
 
   Future<int> _countExplain() async {
     final rows = await db.customSelect(
-      'SELECT COUNT(*) AS c FROM evidence_events WHERE explain_mode = 1',
+      'SELECT COUNT(*) AS c FROM evidence_events '
+      "WHERE explain_mode = 1 AND source != 'legacy_mixed'",
       readsFrom: {db.evidenceEvents},
     ).getSingle();
     return rows.read<int>('c');
@@ -142,6 +168,7 @@ class AchievementEngine {
   Future<int> _maxIndependentStreak() async {
     final rows = await db.customSelect(
       'SELECT independent, score FROM evidence_events '
+      "WHERE source != 'legacy_mixed' "
       'ORDER BY created_at ASC LIMIT 2000',
       readsFrom: {db.evidenceEvents},
     ).get();
@@ -238,13 +265,17 @@ class AchievementSnapshot {
     required this.totalXp,
     required this.independentXp,
     required this.settledAt,
+    required this.subject,
   });
 
   final List<AchievementView> views;
   final List<AchievementUnlock> newlyUnlocked;
+
+  /// 本学科累计 XP。XP 按学科记账，跨学科不合并。
   final int totalXp;
   final int independentXp;
   final DateTime settledAt;
+  final String subject;
 
   int get unlockedCount => views.where((e) => e.unlocked).length;
 }

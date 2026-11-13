@@ -1,0 +1,244 @@
+{
+  "achievements": [
+    {
+      "id": "japanese.first_step",
+      "title": "第一步",
+      "description": "留下第一条学习证据。等级从这里开始长。",
+      "metric": "evidence_total",
+      "independentOnly": false,
+      "xpEligible": false,
+      "icon": "①",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 1,
+          "xp": 0,
+          "label": "开始"
+        },
+        {
+          "tier": "silver",
+          "target": 25,
+          "xp": 0,
+          "label": "进入状态"
+        },
+        {
+          "tier": "gold",
+          "target": 150,
+          "xp": 0,
+          "label": "稳定输出"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.independent_streak",
+      "title": "独立连胜",
+      "description": "连续独立做对、不点提示。这条只认独立作答。",
+      "metric": "independent_streak_max",
+      "independentOnly": true,
+      "xpEligible": false,
+      "icon": "⚡",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 3,
+          "xp": 0,
+          "label": "三连"
+        },
+        {
+          "tier": "silver",
+          "target": 10,
+          "xp": 0,
+          "label": "十连"
+        },
+        {
+          "tier": "gold",
+          "target": 25,
+          "xp": 0,
+          "label": "二十五连"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.diagnostic_finish",
+      "title": "摸清底细",
+      "description": "完成阶梯诊断。XP 只在这里发——诊断是唯一值得奖励的行为。",
+      "metric": "diagnostic_sessions",
+      "independentOnly": false,
+      "xpEligible": true,
+      "icon": "◎",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 1,
+          "xp": 20,
+          "label": "首次诊断"
+        },
+        {
+          "tier": "silver",
+          "target": 5,
+          "xp": 60,
+          "label": "复诊 5 次"
+        },
+        {
+          "tier": "gold",
+          "target": 20,
+          "xp": 150,
+          "label": "复诊 20 次"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.hint_free",
+      "title": "自己啃下来",
+      "description": "零提示独立做对的题目数量。辅助区不计入。",
+      "metric": "hint_free_items",
+      "independentOnly": true,
+      "xpEligible": false,
+      "icon": "✕",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 5,
+          "xp": 0,
+          "label": "5 题"
+        },
+        {
+          "tier": "silver",
+          "target": 25,
+          "xp": 0,
+          "label": "25 题"
+        },
+        {
+          "tier": "gold",
+          "target": 100,
+          "xp": 0,
+          "label": "100 题"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.level_up",
+      "title": "会用",
+      "description": "把知识点练到「会用」以上。按节点独立计。",
+      "metric": "nodes_at_level_3",
+      "independentOnly": true,
+      "xpEligible": false,
+      "icon": "▲",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 1,
+          "xp": 0,
+          "label": "第一个"
+        },
+        {
+          "tier": "silver",
+          "target": 5,
+          "xp": 0,
+          "label": "五个"
+        },
+        {
+          "tier": "gold",
+          "target": 12,
+          "xp": 0,
+          "label": "十二个"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.review_keeper",
+      "title": "复习守时",
+      "description": "按时完成复习卡片的次数。",
+      "metric": "vocab_reviews",
+      "independentOnly": false,
+      "xpEligible": false,
+      "icon": "↻",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 20,
+          "xp": 0,
+          "label": "20 次"
+        },
+        {
+          "tier": "silver",
+          "target": 100,
+          "xp": 0,
+          "label": "100 次"
+        },
+        {
+          "tier": "gold",
+          "target": 500,
+          "xp": 0,
+          "label": "500 次"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.explain_survivor",
+      "title": "听懂了也算",
+      "description": "讲解模式完成的题数——不进成功率，但说明你真的在弄懂。",
+      "metric": "explain_sessions",
+      "independentOnly": false,
+      "xpEligible": false,
+      "icon": "☰",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 3,
+          "xp": 0,
+          "label": "3 题"
+        },
+        {
+          "tier": "silver",
+          "target": 15,
+          "xp": 0,
+          "label": "15 题"
+        },
+        {
+          "tier": "gold",
+          "target": 50,
+          "xp": 0,
+          "label": "50 题"
+        }
+      ],
+      "subjectId": "japanese"
+    },
+    {
+      "id": "japanese.streak_days",
+      "title": "连续天数",
+      "description": "每天留下至少一条证据。断一天就归零。",
+      "metric": "streak_days",
+      "independentOnly": false,
+      "xpEligible": false,
+      "icon": "◷",
+      "stages": [
+        {
+          "tier": "bronze",
+          "target": 3,
+          "xp": 0,
+          "label": "3 天"
+        },
+        {
+          "tier": "silver",
+          "target": 7,
+          "xp": 0,
+          "label": "7 天"
+        },
+        {
+          "tier": "gold",
+          "target": 30,
+          "xp": 0,
+          "label": "30 天"
+        }
+      ],
+      "subjectId": "japanese"
+    }
+  ]
+}

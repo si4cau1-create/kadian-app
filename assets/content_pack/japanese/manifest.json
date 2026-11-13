@@ -1,0 +1,17 @@
+{
+  "packId": "kadian.japanese",
+  "subject": "japanese",
+  "version": "2026.11.1",
+  "minAppVersion": "4.0.0",
+  "engineVersion": "1.0.0",
+  "createdAt": "2026-11-14T00:00:00Z",
+  "checksum": "16db189f2044253affa0b8b60d51d23aa184992b8b35974831c470fdc939e4a2",
+  "notes": "日语单学科内容包：日语 N3 五轨：语法 / 词汇 / 阅读 / 听力 / 写作。本包只含本学科节点，不可与其他学科混用。",
+  "fileHashes": {
+    "graph.json": "95e6320e09f2d98fce533779b2e4a100654683764bec1bec7990c1e9f6a5d12d",
+    "items.json": "dfee2bbc0d91379e4b8aa00b31f5ac3a5ac4de915d266570af0034e504a7887f",
+    "vocab.json": "a5befcde0e752e52860222042ab72a7077c8dc9652b87168432a96cf0771e338",
+    "achievements.json": "3bc6d093c732557005d81c5f8b2818b83cda1b4dff99ec07ab4ff65442550084",
+    "calibration_params.json": "9d6ba491170ea70857f0aa9f987484b1a4f079a2430c8a7d79ba11f6b2287a3e"
+  }
+}

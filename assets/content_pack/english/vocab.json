@@ -1,0 +1,104 @@
+{
+  "vocab": [
+    {
+      "id": "en.v.001",
+      "lemma": "trial",
+      "reading": "",
+      "gloss": "试行、试验",
+      "pos": "noun",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "a three-month trial"
+    },
+    {
+      "id": "en.v.002",
+      "lemma": "outcome",
+      "reading": "",
+      "gloss": "结果、成果",
+      "pos": "noun",
+      "clusterId": "en.r.vocab",
+      "dimension": "reading",
+      "example": "outcomes delivered"
+    },
+    {
+      "id": "en.v.003",
+      "lemma": "reputation",
+      "reading": "",
+      "gloss": "名声、声誉",
+      "pos": "noun",
+      "clusterId": "en.r.vocab",
+      "dimension": "reading",
+      "example": "build a reputation on being visible"
+    },
+    {
+      "id": "en.v.004",
+      "lemma": "visible",
+      "reading": "",
+      "gloss": "可见的、被看见的",
+      "pos": "adj",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "felt invisible"
+    },
+    {
+      "id": "en.v.005",
+      "lemma": "internal",
+      "reading": "",
+      "gloss": "内部的",
+      "pos": "adj",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "The harder problem was internal."
+    },
+    {
+      "id": "en.v.006",
+      "lemma": "deliver",
+      "reading": "",
+      "gloss": "交付、兑现",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "writing",
+      "example": "outcomes delivered"
+    },
+    {
+      "id": "en.v.007",
+      "lemma": "measure",
+      "reading": "",
+      "gloss": "衡量、测量",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "writing",
+      "example": "how we measured work"
+    },
+    {
+      "id": "en.v.008",
+      "lemma": "complain",
+      "reading": "",
+      "gloss": "抱怨",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "Managers worried that clients would complain."
+    },
+    {
+      "id": "en.v.009",
+      "lemma": "avoid",
+      "reading": "",
+      "gloss": "避免、回避",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "writing",
+      "example": "Meetings had been used as a way to avoid decisions."
+    },
+    {
+      "id": "en.v.010",
+      "lemma": "notice",
+      "reading": "",
+      "gloss": "注意到",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "Most clients did not notice."
+    }
+  ]
+}

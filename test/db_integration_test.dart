@@ -11,6 +11,7 @@ import 'package:kadian_app/core/content_pack/loader.dart';
 import 'package:kadian_app/core/content_pack/models.dart';
 import 'package:kadian_app/core/db/database.dart';
 import 'package:kadian_app/core/services/practice_service.dart';
+import 'package:kadian_app/core/subject/subject.dart';
 import 'package:kadian_app/features/achievements/achievement_engine.dart';
 import 'package:sqlite3/open.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -33,7 +34,7 @@ void main() {
   });
 
   Map<String, String> readPack() {
-    final dir = Directory('assets/content_pack');
+    final dir = Directory('assets/content_pack/japanese');
     return {
       for (final file in dir.listSync().whereType<File>())
         if (file.path.endsWith('.json'))
@@ -42,7 +43,12 @@ void main() {
   }
 
   ContentPack loadPack() => const ContentPackLoader()
-      .parse(readPack(), verifyChecksum: true, currentAppVersion: '3.0.0')
+      .parse(
+        readPack(),
+        verifyChecksum: true,
+        currentAppVersion: '4.0.0',
+        expectedSubject: Subject.japanese,
+      )
       .pack;
 
   group('本地闭环', () {
@@ -59,6 +65,7 @@ void main() {
         pack: pack,
         engine: CalibrationEngine(params),
         aggregator: const LevelAggregator(params),
+        subject: Subject.japanese,
       );
     });
 
@@ -167,16 +174,17 @@ void main() {
         db: db,
         pack: pack,
         requiredEngineVersion: '1.0.0',
+        subject: Subject.japanese,
       );
       final snapshot = await engine.settle();
 
       final firstStep =
-          snapshot.views.firstWhere((v) => v.def.id == 'first_step');
+          snapshot.views.firstWhere((v) => v.def.id == 'japanese.first_step');
       expect(firstStep.tier, 'bronze');
 
       // 只做了一道题：诊断 XP 仍为 0
       final diagnostic = snapshot.views
-          .firstWhere((v) => v.def.id == 'diagnostic_finish');
+          .firstWhere((v) => v.def.id == 'japanese.diagnostic_finish');
       expect(diagnostic.tier, 'none');
       expect(snapshot.totalXp, 0);
 

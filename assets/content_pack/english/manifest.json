@@ -1,0 +1,17 @@
+{
+  "packId": "kadian.english",
+  "subject": "english",
+  "version": "2026.11.1",
+  "minAppVersion": "4.0.0",
+  "engineVersion": "1.0.0",
+  "createdAt": "2026-11-14T00:00:00Z",
+  "checksum": "7c38761a151badd0d484c6bb6d32b38f4785d1a6a673f9c1ca3ea2a8b19ac6e9",
+  "notes": "英语单学科内容包：英语 B1：阅读 + 语法 / 分词。本包只含本学科节点，不可与其他学科混用。",
+  "fileHashes": {
+    "graph.json": "229469dba72d24959c0c41c4b6f2e97fb220ce2773e3f001b985c115d9f983fc",
+    "items.json": "bb39dd028b720e91ab0346b7a829f300e6726c06ea526ce85c4889be062ae3f2",
+    "vocab.json": "97f6026e9e719d5107f3b40b3612a6ea203a8f3598d4f479256d8d3287126979",
+    "achievements.json": "780e82fcd35e7b297a321555fcc3a317c5aec9ed927419062b4ee194953100c5",
+    "calibration_params.json": "9d6ba491170ea70857f0aa9f987484b1a4f079a2430c8a7d79ba11f6b2287a3e"
+  }
+}

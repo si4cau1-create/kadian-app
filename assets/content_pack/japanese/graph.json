@@ -4,13 +4,9 @@
       "id": "ja",
       "title": "日语",
       "beta": false,
-      "trackIds": ["ja.n3"]
-    },
-    {
-      "id": "en",
-      "title": "英语",
-      "beta": false,
-      "trackIds": ["en.b1"]
+      "trackIds": [
+        "ja.n3"
+      ]
     }
   ],
   "tracks": [
@@ -18,13 +14,13 @@
       "id": "ja.n3",
       "subjectId": "ja",
       "title": "日语 N3 五轨",
-      "clusterIds": ["ja.n3.grammar", "ja.n3.vocab", "ja.n3.reading", "ja.n3.listening", "ja.n3.writing"]
-    },
-    {
-      "id": "en.b1",
-      "subjectId": "en",
-      "title": "英语 B1 阅读",
-      "clusterIds": ["en.b1.grammar", "en.b1.reading"]
+      "clusterIds": [
+        "ja.n3.grammar",
+        "ja.n3.vocab",
+        "ja.n3.reading",
+        "ja.n3.listening",
+        "ja.n3.writing"
+      ]
     }
   ],
   "clusters": [
@@ -33,49 +29,53 @@
       "subjectId": "ja",
       "trackId": "ja.n3",
       "title": "语法",
-      "nodeIds": ["ja.g.masu", "ja.g.te", "ja.g.ta", "ja.g.cond", "ja.g.passive"]
+      "nodeIds": [
+        "ja.g.masu",
+        "ja.g.te",
+        "ja.g.ta",
+        "ja.g.cond",
+        "ja.g.passive"
+      ]
     },
     {
       "id": "ja.n3.vocab",
       "subjectId": "ja",
       "trackId": "ja.n3",
       "title": "词汇",
-      "nodeIds": ["ja.v.admin", "ja.v.work"]
+      "nodeIds": [
+        "ja.v.admin",
+        "ja.v.work"
+      ]
     },
     {
       "id": "ja.n3.reading",
       "subjectId": "ja",
       "trackId": "ja.n3",
       "title": "阅读",
-      "nodeIds": ["ja.r.main", "ja.r.detail", "ja.r.infer"]
+      "nodeIds": [
+        "ja.r.main",
+        "ja.r.detail",
+        "ja.r.infer"
+      ]
     },
     {
       "id": "ja.n3.listening",
       "subjectId": "ja",
       "trackId": "ja.n3",
       "title": "听力",
-      "nodeIds": ["ja.l.task", "ja.l.point"]
+      "nodeIds": [
+        "ja.l.task",
+        "ja.l.point"
+      ]
     },
     {
       "id": "ja.n3.writing",
       "subjectId": "ja",
       "trackId": "ja.n3",
       "title": "写作",
-      "nodeIds": ["ja.w.email"]
-    },
-    {
-      "id": "en.b1.grammar",
-      "subjectId": "en",
-      "trackId": "en.b1",
-      "title": "语法",
-      "nodeIds": ["en.g.relative", "en.g.participle"]
-    },
-    {
-      "id": "en.b1.reading",
-      "subjectId": "en",
-      "trackId": "en.b1",
-      "title": "阅读",
-      "nodeIds": ["en.r.detail", "en.r.infer", "en.r.vocab"]
+      "nodeIds": [
+        "ja.w.email"
+      ]
     }
   ],
   "nodes": [
@@ -85,43 +85,66 @@
       "title": "ます形与时态",
       "prereqIds": [],
       "weight": 1.0,
-      "tags": ["grammar", "verb"],
+      "tags": [
+        "grammar",
+        "verb"
+      ],
       "gloss": "礼貌体的基本盘：现在/未来用ます，过去用ました，否定ません。"
     },
     {
       "id": "ja.g.te",
       "clusterId": "ja.n3.grammar",
       "title": "て形",
-      "prereqIds": ["ja.g.masu"],
+      "prereqIds": [
+        "ja.g.masu"
+      ],
       "weight": 1.2,
-      "tags": ["grammar", "verb"],
+      "tags": [
+        "grammar",
+        "verb"
+      ],
       "gloss": "连接、请求、进行、状态；N3 阅读里出现频率最高的变形。"
     },
     {
       "id": "ja.g.ta",
       "clusterId": "ja.n3.grammar",
       "title": "た形与たまま",
-      "prereqIds": ["ja.g.te"],
+      "prereqIds": [
+        "ja.g.te"
+      ],
       "weight": 1.0,
-      "tags": ["grammar", "verb"],
+      "tags": [
+        "grammar",
+        "verb"
+      ],
       "gloss": "过去/完成；「〜たまま」表示状态未变就做了另一件事。"
     },
     {
       "id": "ja.g.cond",
       "clusterId": "ja.n3.grammar",
       "title": "条件形（と・ば・たら・なら）",
-      "prereqIds": ["ja.g.ta"],
+      "prereqIds": [
+        "ja.g.ta"
+      ],
       "weight": 1.1,
-      "tags": ["grammar", "condition"],
+      "tags": [
+        "grammar",
+        "condition"
+      ],
       "gloss": "と＝必然/自然结果，ば＝假定条件，たら＝完成后的顺接，なら＝承接话题。"
     },
     {
       "id": "ja.g.passive",
       "clusterId": "ja.n3.grammar",
       "title": "受身",
-      "prereqIds": ["ja.g.te"],
+      "prereqIds": [
+        "ja.g.te"
+      ],
       "weight": 1.0,
-      "tags": ["grammar", "voice"],
+      "tags": [
+        "grammar",
+        "voice"
+      ],
       "gloss": "被动态：主语是承受者；N3 常考「被害の受身」。"
     },
     {
@@ -130,116 +153,110 @@
       "title": "行政手续词簇",
       "prereqIds": [],
       "weight": 1.0,
-      "tags": ["vocab", "life"],
+      "tags": [
+        "vocab",
+        "life"
+      ],
       "gloss": "転入・住民票・窓口・手続き：生活场景高频词，考试与真实生活都用得上。"
     },
     {
       "id": "ja.v.work",
       "clusterId": "ja.n3.vocab",
       "title": "职场动作词簇",
-      "prereqIds": ["ja.v.admin"],
+      "prereqIds": [
+        "ja.v.admin"
+      ],
       "weight": 1.0,
-      "tags": ["vocab", "work"],
+      "tags": [
+        "vocab",
+        "work"
+      ],
       "gloss": "打ち合わせ・確認・予約・コピー：办公室里的动作动词。"
     },
     {
       "id": "ja.r.main",
       "clusterId": "ja.n3.reading",
       "title": "主旨题",
-      "prereqIds": ["ja.v.admin"],
+      "prereqIds": [
+        "ja.v.admin"
+      ],
       "weight": 1.2,
-      "tags": ["reading", "skill"],
+      "tags": [
+        "reading",
+        "skill"
+      ],
       "gloss": "问「筆者が最も言いたいこと」：答案通常在转折后或结尾。"
     },
     {
       "id": "ja.r.detail",
       "clusterId": "ja.n3.reading",
       "title": "细节题",
-      "prereqIds": ["ja.r.main"],
+      "prereqIds": [
+        "ja.r.main"
+      ],
       "weight": 1.0,
-      "tags": ["reading", "skill"],
+      "tags": [
+        "reading",
+        "skill"
+      ],
       "gloss": "定位原文 + 同义替换，警惕「文中出现过但答非所问」的选项。"
     },
     {
       "id": "ja.r.infer",
       "clusterId": "ja.n3.reading",
       "title": "推断题",
-      "prereqIds": ["ja.r.detail"],
+      "prereqIds": [
+        "ja.r.detail"
+      ],
       "weight": 1.0,
-      "tags": ["reading", "skill"],
+      "tags": [
+        "reading",
+        "skill"
+      ],
       "gloss": "从语气、副词、敬语判断态度，不选文中没有依据的合理猜测。"
     },
     {
       "id": "ja.l.task",
       "clusterId": "ja.n3.listening",
       "title": "课题理解",
-      "prereqIds": ["ja.g.te"],
+      "prereqIds": [
+        "ja.g.te"
+      ],
       "weight": 1.0,
-      "tags": ["listening", "skill"],
+      "tags": [
+        "listening",
+        "skill"
+      ],
       "gloss": "先做什么/接下来做什么：抓住「まず」「その前に」「〜てから」。"
     },
     {
       "id": "ja.l.point",
       "clusterId": "ja.n3.listening",
       "title": "要点理解",
-      "prereqIds": ["ja.l.task"],
+      "prereqIds": [
+        "ja.l.task"
+      ],
       "weight": 1.0,
-      "tags": ["listening", "skill"],
+      "tags": [
+        "listening",
+        "skill"
+      ],
       "gloss": "问原因/条件/最该注意的点：注意「実は」「ただ」「でも」后的信息。"
     },
     {
       "id": "ja.w.email",
       "clusterId": "ja.n3.writing",
       "title": "商务邮件",
-      "prereqIds": ["ja.g.masu", "ja.v.work"],
+      "prereqIds": [
+        "ja.g.masu",
+        "ja.v.work"
+      ],
       "weight": 1.0,
-      "tags": ["writing", "register"],
+      "tags": [
+        "writing",
+        "register"
+      ],
       "gloss": "社外=お世話になっております，社内=お疲れさまです；敬语层级别用反。"
-    },
-    {
-      "id": "en.g.relative",
-      "clusterId": "en.b1.grammar",
-      "title": "定语从句",
-      "prereqIds": [],
-      "weight": 1.0,
-      "tags": ["grammar", "clause"],
-      "gloss": "who/which/whose/where：先找先行词，再判断从句里缺什么成分。"
-    },
-    {
-      "id": "en.g.participle",
-      "clusterId": "en.b1.grammar",
-      "title": "分词结构",
-      "prereqIds": ["en.g.relative"],
-      "weight": 1.1,
-      "tags": ["grammar", "clause"],
-      "gloss": "Faced with…/Facing…：-ed 被动、-ing 主动，逻辑主语必须与主句一致。"
-    },
-    {
-      "id": "en.r.detail",
-      "clusterId": "en.b1.reading",
-      "title": "细节题",
-      "prereqIds": ["en.g.relative"],
-      "weight": 1.0,
-      "tags": ["reading", "skill"],
-      "gloss": "同义替换是命门：题干词与原文词往往不同形。"
-    },
-    {
-      "id": "en.r.infer",
-      "clusterId": "en.b1.reading",
-      "title": "推断题",
-      "prereqIds": ["en.r.detail"],
-      "weight": 1.1,
-      "tags": ["reading", "skill"],
-      "gloss": "只推一步，不选文中没有线索的「合理想象」。"
-    },
-    {
-      "id": "en.r.vocab",
-      "clusterId": "en.b1.reading",
-      "title": "词义猜测",
-      "prereqIds": ["en.r.detail"],
-      "weight": 0.9,
-      "tags": ["reading", "vocab"],
-      "gloss": "看搭配与上下文褒贬，别背词典第一义。"
     }
   ]
 }

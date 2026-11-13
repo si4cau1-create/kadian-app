@@ -1,9 +1,14 @@
-# 卡点 Kadian 3.0 · 本地优先的跨平台学习客户端
+# 卡点 Kadian 4.0 · 本地优先的跨平台学习客户端
 
 > 做题 → 不会 → 就地精讲 → 学会。全程不跳页。
 >
 > Android + Windows 单代码库（Flutter 3.24），等级/证据/校准/成就全部跑在本地 SQLite，
 > 大模型只作为「在线服务」被调用，且必须经自建代理转发。
+
+**本产品是「单学科学习实例」，不是「双语混合学习器」。**
+一个学习实例只属于一个学科（日语或英语），首次启动二选一确定，之后内容包、
+数据库、等级、成就、复习全部只在该学科内运行；跨学科调用一律报 `subject_mismatch`，
+绝不静默切换。想学另一科就开另一个实例（独立档案、独立数据库）。
 
 本仓库从 2.x 的 PWA + WebView 壳，改为**本地优先的跨平台客户端 + 轻量 LLM 代理**。
 旧版仍在 `kadian-computer`（PWA）与 `kadian-phone`（WebView 壳）两个仓库。
@@ -20,6 +25,7 @@
 | 长按/右键即问 | `SelectionArea` + 自定义 `contextMenuBuilder`，按选中类型过滤意图 |
 | 不替用户做题 | 服务端提示词硬约束 + 一二级答案泄露过滤（客户端再过滤一遍） |
 | 辅助与独立分轨 | `attempts.mode` / `evidence_events.independent`，成就分独立区/辅助区 |
+| 单学科实例 | 学科首次启动二选一；`learners/<id>/<subject>/kadian.sqlite` 分库；内容包按学科分包；跨学科调用报 `subject_mismatch` |
 
 ---
 
@@ -242,9 +248,24 @@ Dart 侧覆盖：IRT+BKT 校准（含「答错不能涨」「三次提示转讲�
 
 ## 11. 版本
 
-- 客户端 `3.0.0+5`，包名 `com.kadian.app`
+- 客户端 `4.0.0+6`，包名 `com.kadian.app`
 - 校准引擎 `1.0.0`，数据库 schema `v2`
-- 内容包 `kadian.base@2026.11.1`（18 节点 / 7 簇 / 20 题 / 3 语篇 / 22 词条 / 8 成就）
+- 内容包按学科分包（各自 8 个带命名空间的成就）：
+  - `kadian.japanese@2026.11.1`：13 节点 / 14 题 / 12 词条
+  - `kadian.english@2026.11.1`：5 节点 / 6 题 / 10 词条
+
+### 单学科档案与旧数据迁移
+
+- 存储：`learners/<learnerId>/<subject>/kadian.sqlite`，换学科 = 换文件，物理上不可能串账。
+- 首启必须选学科，未选择不进学习界面；设置页可查看当前学科。
+- 3.x 的混合单库启动时自动迁移（`core/db/legacy_migration.dart`）：
+  - `ja.*` / `en.*` / `p.ja.*` / `japanese.*` 等 id 能归属的，按学科拆分导入；
+  - 无法归属的标 `legacy_mixed`（证据强制 `independent=false`、`source=legacy_mixed`），
+    归档到 `learners/<id>/legacy_mixed.json`，**不进任何学科库**，从物理上排除出
+    独立成功率与核心成就；
+  - 迁移后旧库改名 `kadian.sqlite.migrated`，只跑一次；
+  - 设置项 `legacy_migration_mode=reset` 对应「首期直接重置单学科档案」：全部归档、
+    一条不导入，数据仍可导出核对。
 
 ## 12. 许可
 
