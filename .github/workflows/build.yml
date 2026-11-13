@@ -96,18 +96,20 @@ jobs:
 
   windows:
     name: Windows EXE / MSIX
-    runs-on: windows-latest
+    # 固定 windows-2022：它带的是 Visual Studio 2022（主版本 17）。
+    # Flutter 3.24.5 的 visual_studio.dart 只会映射
+    #   17 => 'Visual Studio 17 2022'，其余一律 'Visual Studio 16 2019'
+    # windows-latest 已换成 VS 2026（主版本 18），会命中默认分支拿到 2019
+    # 生成器，CMake 直接报 "could not find any instance of Visual Studio"。
+    # 换 Flutter 3.50 能修生成器，但 3.27+ 把 CardTheme 改成了 CardThemeData，
+    # 需要改代码。在统一升级之前，先用带 VS 2022 的 runner 绕过。
+    runs-on: windows-2022
     needs: test
     steps:
       - uses: actions/checkout@v4
-      # 单独用新版 Flutter：3.24.5 的 visual_studio.dart 把 cmakeGenerator
-      # 写死成 switch(_majorVersion){ 17 => 'VS 17 2022', _ => 'VS 16 2019' }，
-      # 遇到 VS 2026（主版本 18）会退回 2019 生成器，直接
-      # "could not find any instance of Visual Studio"。
-      # Flutter master 已补上 18 => 'Visual Studio 18 2026'。
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.50.0'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
       - run: flutter pub get
