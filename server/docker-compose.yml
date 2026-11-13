@@ -1,0 +1,13 @@
+services:
+  proxy:
+    build: .
+    image: kadian/llm-proxy:1.0.0
+    env_file: .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - audit-data:/data
+    restart: unless-stopped
+
+volumes:
+  audit-data:

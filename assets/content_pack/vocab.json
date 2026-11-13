@@ -1,0 +1,224 @@
+{
+  "vocab": [
+    {
+      "id": "ja.v.001",
+      "lemma": "手続き",
+      "reading": "てつづき",
+      "gloss": "手续、程序",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "reading",
+      "example": "転入の手続きをする。"
+    },
+    {
+      "id": "ja.v.002",
+      "lemma": "転入",
+      "reading": "てんにゅう",
+      "gloss": "迁入（向新住址的政府申报）",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "recognition",
+      "example": "市役所で転入の届け出をした。"
+    },
+    {
+      "id": "ja.v.003",
+      "lemma": "住民票",
+      "reading": "じゅうみんひょう",
+      "gloss": "居民登记副本",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "reading",
+      "example": "住民票の写しが必要だ。"
+    },
+    {
+      "id": "ja.v.004",
+      "lemma": "窓口",
+      "reading": "まどぐち",
+      "gloss": "窗口、办事柜台",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "reading",
+      "example": "窓口で手続きをした。"
+    },
+    {
+      "id": "ja.v.005",
+      "lemma": "書類",
+      "reading": "しょるい",
+      "gloss": "文件、材料",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "reading",
+      "example": "必要な書類を確認する。"
+    },
+    {
+      "id": "ja.v.006",
+      "lemma": "手数",
+      "reading": "てすう",
+      "gloss": "麻烦、费事（お手数ですが＝麻烦您了）",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "recognition",
+      "example": "お手数ですが、地図に印をつけていただけますか。"
+    },
+    {
+      "id": "ja.v.007",
+      "lemma": "庁舎",
+      "reading": "ちょうしゃ",
+      "gloss": "政府办公楼",
+      "pos": "名詞",
+      "clusterId": "ja.v.admin",
+      "dimension": "recognition",
+      "example": "庁舎の中は混んでいた。"
+    },
+    {
+      "id": "ja.v.008",
+      "lemma": "打ち合わせ",
+      "reading": "うちあわせ",
+      "gloss": "（事前）商洽、碰头",
+      "pos": "名詞",
+      "clusterId": "ja.v.work",
+      "dimension": "reading",
+      "example": "明日の打ち合わせの資料を準備する。"
+    },
+    {
+      "id": "ja.v.009",
+      "lemma": "資料",
+      "reading": "しりょう",
+      "gloss": "资料",
+      "pos": "名詞",
+      "clusterId": "ja.v.work",
+      "dimension": "reading",
+      "example": "資料をコピーする。"
+    },
+    {
+      "id": "ja.v.010",
+      "lemma": "確認",
+      "reading": "かくにん",
+      "gloss": "确认",
+      "pos": "名詞・サ変",
+      "clusterId": "ja.v.work",
+      "dimension": "writing",
+      "example": "部長に確認してもらう。"
+    },
+    {
+      "id": "ja.v.011",
+      "lemma": "予約",
+      "reading": "よやく",
+      "gloss": "预约",
+      "pos": "名詞・サ変",
+      "clusterId": "ja.v.work",
+      "dimension": "writing",
+      "example": "会議室を予約してあります。"
+    },
+    {
+      "id": "ja.v.012",
+      "lemma": "部長",
+      "reading": "ぶちょう",
+      "gloss": "部长（部门负责人）",
+      "pos": "名詞",
+      "clusterId": "ja.v.work",
+      "dimension": "recognition",
+      "example": "部長に見てもらう。"
+    },
+    {
+      "id": "en.v.001",
+      "lemma": "trial",
+      "reading": "",
+      "gloss": "试行、试验",
+      "pos": "noun",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "a three-month trial"
+    },
+    {
+      "id": "en.v.002",
+      "lemma": "outcome",
+      "reading": "",
+      "gloss": "结果、成果",
+      "pos": "noun",
+      "clusterId": "en.r.vocab",
+      "dimension": "reading",
+      "example": "outcomes delivered"
+    },
+    {
+      "id": "en.v.003",
+      "lemma": "reputation",
+      "reading": "",
+      "gloss": "名声、声誉",
+      "pos": "noun",
+      "clusterId": "en.r.vocab",
+      "dimension": "reading",
+      "example": "build a reputation on being visible"
+    },
+    {
+      "id": "en.v.004",
+      "lemma": "visible",
+      "reading": "",
+      "gloss": "可见的、被看见的",
+      "pos": "adj",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "felt invisible"
+    },
+    {
+      "id": "en.v.005",
+      "lemma": "internal",
+      "reading": "",
+      "gloss": "内部的",
+      "pos": "adj",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "The harder problem was internal."
+    },
+    {
+      "id": "en.v.006",
+      "lemma": "deliver",
+      "reading": "",
+      "gloss": "交付、兑现",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "writing",
+      "example": "outcomes delivered"
+    },
+    {
+      "id": "en.v.007",
+      "lemma": "measure",
+      "reading": "",
+      "gloss": "衡量、测量",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "writing",
+      "example": "how we measured work"
+    },
+    {
+      "id": "en.v.008",
+      "lemma": "complain",
+      "reading": "",
+      "gloss": "抱怨",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "Managers worried that clients would complain."
+    },
+    {
+      "id": "en.v.009",
+      "lemma": "avoid",
+      "reading": "",
+      "gloss": "避免、回避",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "writing",
+      "example": "Meetings had been used as a way to avoid decisions."
+    },
+    {
+      "id": "en.v.010",
+      "lemma": "notice",
+      "reading": "",
+      "gloss": "注意到",
+      "pos": "verb",
+      "clusterId": "en.r.vocab",
+      "dimension": "recognition",
+      "example": "Most clients did not notice."
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+name: kadian_app
+description: "卡点 Kadian · 本地优先的跨平台学习客户端（Android + Windows）"
+publish_to: 'none'
+version: 3.0.0+5
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # 状态管理
+  flutter_riverpod: ^2.5.1
+
+  # 本地数据库（证据、节点状态、题目难度、词表、成就）
+  drift: ^2.20.3
+  sqlite3_flutter_libs: ^0.5.24
+  sqlite3: ^2.4.6
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+  # 网络：攻略流式输出 / 代理调用
+  dio: ^5.7.0
+
+  # 内容包 ZIP 解析与校验
+  archive: ^3.6.1
+  crypto: ^3.0.3
+
+  uuid: ^4.4.2
+  intl: ^0.19.0
+  shared_preferences: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  drift_dev: ^2.20.3
+  build_runner: ^2.4.11
+  msix: ^3.16.9
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/content_pack/
+
+# Windows MSIX 打包配置（dart run msix:create 使用）
+msix_config:
+  display_name: 卡点 Kadian
+  publisher_display_name: Kadian
+  identity_name: com.kadian.app
+  msix_version: 3.0.0.0
+  logo_path: assets/icons/icon-512.png
+  capabilities: internetClient
+  languages: zh-CN, ja, en-US
+  install_certificate: 'false'

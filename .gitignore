@@ -1,0 +1,38 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+
+# Android 签名密钥（绝不入库）
+android/key.properties
+android/keystore/
+android/local.properties
+android/app/release/
+
+# Gradle / Kotlin 构建缓存
+android/.gradle/
+android/app/.cxx/
+.kotlin/
+
+# Windows 构建产物
+windows/flutter/ephemeral/
+windows/runner/*.vcxproj.user
+
+# 打包产物
+dist/
+*.msix
+*.msixupload
+*.apk
+*.aab
+
+# 测试依赖（Windows 下跑 DB 集成测试用的 sqlite3.dll，不入库）
+.test_deps/
+build/apk-build.log
+
+# 系统
+Thumbs.db
+.DS_Store
