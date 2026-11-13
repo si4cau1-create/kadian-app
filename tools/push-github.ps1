@@ -119,9 +119,28 @@ if ($Proxy) {
 # ------------------------------------------------------------------ token
 Step 'Authenticating'
 
+$helper = ''
+try {
+    $helper = (git config --get credential.helper 2>$null | Out-String).Trim()
+} catch {
+    $helper = ''
+}
+
 if ($env:KADIAN_GIT_TOKEN) {
+    # Explicit token wins: hand it to git without touching disk or argv.
     $token = $env:KADIAN_GIT_TOKEN
     Write-Host 'Using token from KADIAN_GIT_TOKEN.'
+    $pair = ':' + $token
+    $b64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($pair))
+    $env:GIT_CONFIG_COUNT = '1'
+    $env:GIT_CONFIG_KEY_0 = 'http.extraHeader'
+    $env:GIT_CONFIG_VALUE_0 = "Authorization: Basic $b64"
+    $token = $null
+    $b64 = $null
+    [GC]::Collect()
+} elseif ($helper) {
+    Write-Host "Credential helper '$helper' is configured; git will prompt on first contact."
+    Write-Host 'Choose "Token" in the window that appears and paste a Personal Access Token.'
 } else {
     $secure = Read-Host -AsSecureString -Prompt 'Paste a GitHub token (input is hidden)'
     $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
@@ -130,21 +149,18 @@ if ($env:KADIAN_GIT_TOKEN) {
     } finally {
         [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
     }
+    if ([string]::IsNullOrWhiteSpace($token)) {
+        Fail 'No token provided.'
+    }
+    $pair = ':' + $token
+    $b64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($pair))
+    $env:GIT_CONFIG_COUNT = '1'
+    $env:GIT_CONFIG_KEY_0 = 'http.extraHeader'
+    $env:GIT_CONFIG_VALUE_0 = "Authorization: Basic $b64"
+    $token = $null
+    $b64 = $null
+    [GC]::Collect()
 }
-
-if ([string]::IsNullOrWhiteSpace($token)) {
-    Fail 'No token provided.'
-}
-
-# Hand the token to git without touching disk or the command line.
-$pair = ':' + $token
-$b64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes($pair))
-$env:GIT_CONFIG_COUNT = '1'
-$env:GIT_CONFIG_KEY_0 = 'http.extraHeader'
-$env:GIT_CONFIG_VALUE_0 = "Authorization: Basic $b64"
-$token = $null
-$b64 = $null
-[GC]::Collect()
 
 # --------------------------------------------------------- probe upstream
 Step 'Contacting GitHub'
