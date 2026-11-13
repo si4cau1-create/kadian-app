@@ -1,0 +1,53 @@
+# 换行符统一策略
+#
+# 背景：本机 core.autocrlf=true，仓库存 LF、检出到工作区变 CRLF。
+# 这会让"按文件字节算校验和"的逻辑（内容包 manifest）在 Windows 上
+# 得出与 Linux 不同的结果，也让 diff 噪声变大。
+#
+# 这里显式规定：所有文本文件在仓库里和工作区里都是 LF。
+
+* text=auto eol=lf
+
+# ---- 二进制：绝不能做换行转换 ----
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.icns binary
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.zip binary
+*.gz binary
+*.jar binary
+*.jks binary
+*.keystore binary
+*.apk binary
+*.aab binary
+*.msix binary
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+*.pdf binary
+*.sqlite binary
+*.sqlite3 binary
+
+# ---- 需要 CRLF 的脚本（Windows cmd 对 LF 的批处理容错差）----
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# ---- 明确 LF ----
+*.dart text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.sh text eol=lf
+gradlew text eol=lf
+*.gradle text eol=lf
+Dockerfile text eol=lf
