@@ -55,7 +55,11 @@ class ContentPackLoader {
     final keys = files.keys.where((k) => k != 'manifest.json').toList()..sort();
     final buffer = StringBuffer();
     for (final key in keys) {
-      final digest = sha256.convert(utf8.encode(files[key]!)).toString();
+      // 换行先归一成 LF 再算：Windows 上 core.autocrlf=true 会把检出文件
+      // 变成 CRLF，直接用原始字节算会让同一份内容包在不同平台上得出不同
+      // 校验和。Python 打包脚本用文本模式读文件，本身就是 LF 归一。
+      final normalized = files[key]!.replaceAll('\r\n', '\n');
+      final digest = sha256.convert(utf8.encode(normalized)).toString();
       buffer.writeln('$key:$digest');
     }
     return sha256.convert(utf8.encode(buffer.toString())).toString();

@@ -58,7 +58,7 @@ void main() {
         db: db,
         pack: pack,
         engine: CalibrationEngine(params),
-        aggregator: LevelAggregator(params),
+        aggregator: const LevelAggregator(params),
       );
     });
 
